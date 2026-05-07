@@ -44,7 +44,7 @@ export function RoutineCard({ routine }: RoutineCardProps) {
       <header className="flex items-center justify-between gap-2">
         <h3 className="flex items-center gap-2"><span aria-hidden className="text-3xl">{routine.emoji}</span>{trTitle}</h3>
         <button type="button" className="btn btn-secondary !min-h-0 !py-2 !px-3 text-sm" onClick={reset} aria-label={t('routines.resetAria', { title: trTitle })}>
-          ↺ {t('routines.reset')}
+          {t('routines.reset')}
         </button>
       </header>
 
