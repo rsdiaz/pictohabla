@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   Capa base: fuente, tamaños accesibles, foco visible y temas.
+   ============================================================ */
+@layer base {
+  html, body, #root { height: 100%; }
+  body {
+    @apply font-sans text-soft-text bg-soft-bg antialiased;
+    -webkit-tap-highlight-color: transparent;
+    font-size: 18px;
+  }
+  [data-theme="dark"] body {
+    @apply bg-dark-bg text-dark-text;
+  }
+  /* Foco accesible y visible */
+  :focus-visible {
+    outline: 3px solid theme('colors.brand.DEFAULT');
+    outline-offset: 3px;
+    border-radius: 10px;
+  }
+  h1 { @apply text-3xl sm:text-4xl font-bold leading-tight; }
+  h2 { @apply text-2xl sm:text-3xl font-bold leading-tight; }
+  h3 { @apply text-xl sm:text-2xl font-bold leading-tight; }
+
+  /* Modo sin distracciones: oculta navegación y agranda elementos */
+  [data-distraction-free="true"] .nav-hide-on-focus { display: none !important; }
+  [data-distraction-free="true"] body { font-size: 22px; }
+
+  /* Reduce motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* Botón base con áreas táctiles grandes (mín. 56px) */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-3 rounded-md font-semibold
+           min-h-[56px] min-w-[56px] bg-brand-soft text-soft-text
+           shadow-soft transition-transform duration-200
+           hover:bg-brand hover:text-white active:scale-[0.97];
+  }
+  .btn-secondary {
+    @apply bg-soft-surface2 border-2 border-soft-border text-soft-text hover:bg-soft-surface2/80 hover:text-soft-text;
+  }
+  .btn-success { @apply bg-pastel-success hover:bg-pastel-success/80 hover:text-soft-text; }
+  .btn-danger  { @apply bg-pastel-danger  hover:bg-pastel-danger/80  hover:text-soft-text; }
+  .btn:disabled { @apply opacity-50 cursor-not-allowed hover:bg-brand-soft hover:text-soft-text; }
+
+  .card-soft {
+    @apply bg-soft-surface border border-soft-border rounded-lg shadow-soft;
+  }
+  [data-theme="dark"] .card-soft {
+    @apply bg-dark-surface border-dark-border;
+  }
+
+  .input-base {
+    @apply px-3 py-2 rounded-md border-2 border-soft-border bg-soft-surface text-soft-text text-base
+           focus:outline-none focus:border-brand;
+  }
+  [data-theme="dark"] .input-base {
+    @apply bg-dark-surface text-dark-text border-dark-border;
+  }
+}
