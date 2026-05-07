@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { SplashScreen } from './components/SplashScreen';
+import PWAPrompt from './components/PWAPrompt';
 import { useApp } from './context/AppContext';
 import { useI18n } from './i18n';
 
@@ -31,6 +32,7 @@ export default function App() {
       <footer className="nav-hide-on-focus border-t border-soft-border dark:border-dark-border py-4 text-center text-sm text-soft-textSoft">
         {t('app.footer')}
       </footer>
+      <PWAPrompt />
     </div>
   );
 }

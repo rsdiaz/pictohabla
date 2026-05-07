@@ -84,7 +84,7 @@ export default function ProfileRoute() {
             </div>
           </div>
           <div className="sm:col-span-2">
-            <button type="submit" className="btn btn-success">➕ {t('profile.create')}</button>
+            <button type="submit" className="btn btn-success">{t('profile.create')}</button>
           </div>
         </form>
       </section>

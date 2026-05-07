@@ -17,6 +17,12 @@ const UI = {
     'app.subtitle': 'Comunicación con pictogramas',
     'app.footer': 'Hecho con 💙 para acompañar la comunicación.',
 
+    'pwa.updateTitle': 'Hay una nueva versión disponible',
+    'pwa.updateBody': 'Recarga para obtener las últimas mejoras.',
+    'pwa.update': 'Actualizar',
+    'pwa.dismiss': 'Más tarde',
+    'pwa.offlineReady': 'Listo para usar sin conexión ✨',
+
     'nav.home': 'Inicio',
     'nav.routines': 'Rutinas',
     'nav.emotions': 'Emociones',
@@ -163,6 +169,12 @@ const UI = {
     'app.title': 'PictoTalk',
     'app.subtitle': 'Communicate with pictograms',
     'app.footer': 'Made with 💙 to support communication.',
+
+    'pwa.updateTitle': 'A new version is available',
+    'pwa.updateBody': 'Reload to get the latest improvements.',
+    'pwa.update': 'Update',
+    'pwa.dismiss': 'Later',
+    'pwa.offlineReady': 'Ready to use offline ✨',
 
     'nav.home': 'Home',
     'nav.routines': 'Routines',
