@@ -50,7 +50,15 @@ const PAD: { freqs: number[]; dur: number }[] = [
 ];
 
 /** Reproduce una nota suave con envolvente ADSR rápida. */
-function playNote(ctx: AudioContext, freq: number, start: number, dur: number, gain: number, type: OscillatorType = 'sine') {
+function playNote(
+  ctx: AudioContext,
+  destination: AudioNode,
+  freq: number,
+  start: number,
+  dur: number,
+  gain: number,
+  type: OscillatorType = 'sine'
+) {
   const osc = ctx.createOscillator();
   const g = ctx.createGain();
   osc.type = type;
@@ -59,13 +67,13 @@ function playNote(ctx: AudioContext, freq: number, start: number, dur: number, g
   g.gain.linearRampToValueAtTime(gain, start + 0.04);
   g.gain.linearRampToValueAtTime(gain * 0.7, start + dur * 0.5);
   g.gain.exponentialRampToValueAtTime(0.0001, start + dur);
-  osc.connect(g).connect(ctx.destination);
+  osc.connect(g).connect(destination);
   osc.start(start);
   osc.stop(start + dur + 0.05);
 }
 
 /** Acorde sostenido tipo pad con ataque y liberación largos. */
-function playPad(ctx: AudioContext, freqs: number[], start: number, dur: number, gain: number) {
+function playPad(ctx: AudioContext, destination: AudioNode, freqs: number[], start: number, dur: number, gain: number) {
   freqs.forEach((f) => {
     const osc = ctx.createOscillator();
     const g = ctx.createGain();
@@ -75,54 +83,67 @@ function playPad(ctx: AudioContext, freqs: number[], start: number, dur: number,
     g.gain.linearRampToValueAtTime(gain, start + 0.25);
     g.gain.linearRampToValueAtTime(gain, start + dur - 0.3);
     g.gain.exponentialRampToValueAtTime(0.0001, start + dur);
-    osc.connect(g).connect(ctx.destination);
+    osc.connect(g).connect(destination);
     osc.start(start);
     osc.stop(start + dur + 0.05);
   });
 }
 
 /** Pequeño brillo final tipo "sparkle" */
-function playSparkle(ctx: AudioContext, start: number) {
+function playSparkle(ctx: AudioContext, destination: AudioNode, start: number) {
   [1318.5, 1567.98, 1975.53].forEach((f, i) => {
-    playNote(ctx, f, start + i * 0.06, 0.22, 0.04);
+    playNote(ctx, destination, f, start + i * 0.06, 0.22, 0.04);
   });
 }
 
 export function SplashScreen({ onFinish, withSound = true }: SplashScreenProps) {
   const { t } = useI18n();
   const [leaving, setLeaving] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(withSound);
   const [audioBlocked, setAudioBlocked] = useState(false);
   const ctxRef = useRef<AudioContext | null>(null);
+  const masterGainRef = useRef<GainNode | null>(null);
   const loopRef = useRef<number | null>(null);
   const finishedRef = useRef(false);
   const startedRef = useRef(false);
+  const soundEnabledRef = useRef(withSound);
+
+  const stopAudio = () => {
+    if (loopRef.current != null) {
+      window.clearInterval(loopRef.current);
+      loopRef.current = null;
+    }
+    const ctx = ctxRef.current;
+    ctxRef.current = null;
+    masterGainRef.current = null;
+    startedRef.current = false;
+    if (!ctx) return;
+    try { ctx.close(); } catch { /* noop */ }
+  };
 
   const finish = () => {
     if (finishedRef.current) return;
     finishedRef.current = true;
     setLeaving(true);
     window.setTimeout(onFinish, 450);
-    if (loopRef.current != null) {
-      window.clearInterval(loopRef.current);
-      loopRef.current = null;
-    }
     // Cerrar audio con un pequeño desvanecido
-    const ctx = ctxRef.current;
-    if (ctx) {
-      try {
-        window.setTimeout(() => { try { ctx.close(); } catch { /* noop */ } }, 300);
-      } catch { /* noop */ }
-    }
+    window.setTimeout(() => stopAudio(), 300);
   };
 
-  const startAudio = () => {
-    if (startedRef.current || !withSound) return;
+  const startAudio = (forceRestart = false) => {
+    if (!withSound || !soundEnabledRef.current) return;
+    if (forceRestart) stopAudio();
+    if (startedRef.current) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     startedRef.current = true; // marcamos cuanto antes para evitar dobles arranques
     try {
       const AC = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       const ctx = new AC();
       ctxRef.current = ctx;
+      const master = ctx.createGain();
+      master.gain.value = soundEnabledRef.current ? 1 : 0;
+      master.connect(ctx.destination);
+      masterGainRef.current = master;
 
       const begin = () => {
         if (finishedRef.current || ctx.state === 'closed') return;
@@ -130,8 +151,8 @@ export function SplashScreen({ onFinish, withSound = true }: SplashScreenProps) 
 
         // "Ding" inmediato para confirmar que el audio funciona
         const t0 = ctx.currentTime + 0.02;
-        playNote(ctx, N.G5, t0, 0.18, 0.18);
-        playNote(ctx, N.C6, t0 + 0.12, 0.32, 0.18);
+        playNote(ctx, master, N.G5, t0, 0.18, 0.18);
+        playNote(ctx, master, N.C6, t0 + 0.12, 0.32, 0.18);
 
         const melodyDur = MELODY.reduce((acc, n) => acc + n.dur, 0);
         const padDur = PAD.reduce((acc, p) => acc + p.dur, 0);
@@ -141,10 +162,10 @@ export function SplashScreen({ onFinish, withSound = true }: SplashScreenProps) 
         const scheduleOnce = () => {
           if (finishedRef.current || ctx.state === 'closed') return;
           let t = nextStart;
-          MELODY.forEach((n) => { playNote(ctx, n.freq, t, n.dur, 0.14); t += n.dur; });
+          MELODY.forEach((n) => { playNote(ctx, master, n.freq, t, n.dur, 0.14); t += n.dur; });
           let p = nextStart;
-          PAD.forEach((c) => { playPad(ctx, c.freqs, p, c.dur, 0.05); p += c.dur; });
-          playSparkle(ctx, nextStart + melodyDur - 0.2);
+          PAD.forEach((c) => { playPad(ctx, master, c.freqs, p, c.dur, 0.05); p += c.dur; });
+          playSparkle(ctx, master, nextStart + melodyDur - 0.2);
           nextStart += loopDur;
         };
 
@@ -165,6 +186,16 @@ export function SplashScreen({ onFinish, withSound = true }: SplashScreenProps) 
   };
 
   useEffect(() => {
+    soundEnabledRef.current = soundEnabled;
+    const ctx = ctxRef.current;
+    const master = masterGainRef.current;
+    if (ctx && master) {
+      const target = soundEnabled ? 1 : 0;
+      master.gain.setTargetAtTime(target, ctx.currentTime, 0.05);
+    }
+  }, [soundEnabled]);
+
+  useEffect(() => {
     if (!withSound) {
       return;
     }
@@ -172,7 +203,10 @@ export function SplashScreen({ onFinish, withSound = true }: SplashScreenProps) 
     // Mostramos el aviso y esperamos al primer gesto.
     setAudioBlocked(true);
 
-    const onGesture = () => { startAudio(); };
+    const onGesture = () => {
+      if (!soundEnabledRef.current) return;
+      startAudio();
+    };
     window.addEventListener('pointerdown', onGesture);
     window.addEventListener('keydown', onGesture);
     window.addEventListener('touchstart', onGesture, { passive: true });
@@ -184,8 +218,7 @@ export function SplashScreen({ onFinish, withSound = true }: SplashScreenProps) 
       window.removeEventListener('pointerdown', onGesture);
       window.removeEventListener('keydown', onGesture);
       window.removeEventListener('touchstart', onGesture);
-      if (loopRef.current != null) window.clearInterval(loopRef.current);
-      try { ctxRef.current?.close(); } catch { /* noop */ }
+      stopAudio();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -228,6 +261,29 @@ export function SplashScreen({ onFinish, withSound = true }: SplashScreenProps) 
         })}
       </div>
 
+      {/* Controles flotantes de audio */}
+      {withSound && (
+        <div className="absolute top-4 right-4 z-20 flex flex-col gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              setSoundEnabled((prev) => {
+                const next = !prev;
+                soundEnabledRef.current = next;
+                if (next && !startedRef.current) startAudio(true);
+                return next;
+              });
+            }}
+            aria-pressed={soundEnabled}
+            aria-label={soundEnabled ? t('splash.soundOffAria') : t('splash.soundOnAria')}
+            title={soundEnabled ? t('splash.soundOff') : t('splash.soundOn')}
+            className="w-11 h-11 rounded-full bg-white/85 dark:bg-dark-surface/85 backdrop-blur shadow-lg border border-soft-border dark:border-dark-border flex items-center justify-center text-xl hover:scale-105 active:scale-95 transition-transform"
+          >
+            <span aria-hidden>{soundEnabled ? '🔊' : '🔇'}</span>
+          </button>
+        </div>
+      )}
+
       {/* Logo principal */}
       <div className="relative z-10 flex flex-col items-center gap-4">
         <div
@@ -248,7 +304,7 @@ export function SplashScreen({ onFinish, withSound = true }: SplashScreenProps) 
         </p>
 
         {/* Indicador de carga: puntos */}
-        <div className="flex items-center gap-2 mt-4" aria-label="Cargando">
+        {/* <div className="flex items-center gap-2 mt-4" aria-label="Cargando">
           {[0, 1, 2].map((i) => (
             <span
               key={i}
@@ -256,7 +312,7 @@ export function SplashScreen({ onFinish, withSound = true }: SplashScreenProps) 
               style={{ animationDelay: `${i * 0.18}s` }}
             />
           ))}
-        </div>
+        </div> */}
 
         <button
           type="button"
@@ -269,7 +325,7 @@ export function SplashScreen({ onFinish, withSound = true }: SplashScreenProps) 
           <span aria-hidden>👉</span> {t('splash.start')}
         </button>
         <p className="text-sm text-soft-textSoft mt-1">{t('splash.hint')}</p>
-        {withSound && audioBlocked && (
+        {withSound && soundEnabled && audioBlocked && (
           <p className="text-xs text-soft-textSoft/80 mt-1" aria-live="polite">
             {t('splash.audioBlocked')}
           </p>
