@@ -5,6 +5,7 @@ import Category from './routes/Category';
 import Routine from './routes/Routine';
 import Emotions from './routes/Emotions';
 import Calm from './routes/Calm';
+import TimerPage from './routes/TimerPage';
 import Stories from './routes/Stories';
 import Favorites from './routes/Favorites';
 import Settings from './routes/Settings';
@@ -18,6 +19,7 @@ export const router = createHashRouter([
       { index: true, element: <Home /> },
       { path: 'category/:id', element: <Category /> },
       { path: 'routines', element: <Routine /> },
+      { path: 'timer', element: <TimerPage /> },
       { path: 'emotions', element: <Emotions /> },
       { path: 'calm', element: <Calm /> },
       { path: 'stories', element: <Stories /> },

@@ -25,6 +25,7 @@ const UI = {
 
     'nav.home': 'Inicio',
     'nav.routines': 'Rutinas',
+    'nav.timer': 'Temporizador',
     'nav.emotions': 'Emociones',
     'nav.calm': 'Calma',
     'nav.stories': 'Cuentos',
@@ -115,6 +116,8 @@ const UI = {
     'timer.reset': 'Reiniciar',
     'timer.finishedSpeech': '¡Tiempo cumplido! Buen trabajo.',
     'timer.finishedReward': '¡Tiempo cumplido!',
+    'timer.pageTitle': '⏳ Temporizador visual',
+    'timer.pageIntro': 'Elige un tiempo y pulsa empezar.',
 
     'stories.title': '📖 Historias sociales',
     'stories.intro': 'Elige una historia para anticipar situaciones del día a día.',
@@ -205,6 +208,7 @@ const UI = {
 
     'nav.home': 'Home',
     'nav.routines': 'Routines',
+    'nav.timer': 'Timer',
     'nav.emotions': 'Emotions',
     'nav.calm': 'Calm',
     'nav.stories': 'Stories',
@@ -295,6 +299,8 @@ const UI = {
     'timer.reset': 'Reset',
     'timer.finishedSpeech': 'Time is up! Great job.',
     'timer.finishedReward': 'Time is up!',
+    'timer.pageTitle': '⏳ Visual timer',
+    'timer.pageIntro': 'Choose a duration and press start.',
 
     'stories.title': '📖 Social stories',
     'stories.intro': 'Pick a story to prepare for everyday situations.',

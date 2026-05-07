@@ -1,6 +1,5 @@
 import { ROUTINES } from '../data/routines';
 import { RoutineCard } from '../components/RoutineCard';
-import { Timer } from '../components/Timer';
 import { useI18n } from '../i18n';
 
 export default function Routine() {
@@ -15,9 +14,6 @@ export default function Routine() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {ROUTINES.map((r) => <RoutineCard key={r.id} routine={r} />)}
       </div>
-
-      <h2 className="mt-2">{t('routines.timerTitle')}</h2>
-      <Timer />
     </div>
   );
 }

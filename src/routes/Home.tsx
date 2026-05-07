@@ -21,6 +21,7 @@ export default function Home() {
 
       <section aria-label={t('home.shortcuts')} className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-2">
         <Link to="/routines"  className="btn btn-secondary"><span aria-hidden>🕒</span> {t('nav.routines')}</Link>
+        <Link to="/timer"     className="btn btn-secondary"><span aria-hidden>⏳</span> {t('nav.timer')}</Link>
         <Link to="/emotions"  className="btn btn-secondary"><span aria-hidden>💗</span> {t('nav.emotions')}</Link>
         <Link to="/calm"      className="btn btn-secondary"><span aria-hidden>🧘</span> {t('nav.calm')}</Link>
         <Link to="/stories"   className="btn btn-secondary"><span aria-hidden>📖</span> {t('nav.stories')}</Link>

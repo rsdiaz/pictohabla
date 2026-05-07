@@ -13,6 +13,7 @@ export function Navbar() {
   const NAV_LINKS = [
     { to: '/',          label: t('nav.home'),      icon: '🏠' },
     { to: '/routines',  label: t('nav.routines'),  icon: '🕒' },
+    { to: '/timer',     label: t('nav.timer'),     icon: '⏳' },
     { to: '/emotions',  label: t('nav.emotions'),  icon: '💗' },
     { to: '/calm',      label: t('nav.calm'),      icon: '🧘' },
     { to: '/stories',   label: t('nav.stories'),   icon: '📖' },
