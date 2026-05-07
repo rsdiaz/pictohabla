@@ -27,6 +27,8 @@ const UI = {
     'nav.aria': 'Navegación principal',
     'nav.focusMode': 'Modo concentración',
     'nav.activeProfile': 'Perfil activo: {name}',
+    'nav.openMenu': 'Abrir menú',
+    'nav.closeMenu': 'Cerrar menú',
 
     'splash.start': 'Empezar',
     'splash.startAria': 'Empezar ahora',
@@ -172,6 +174,8 @@ const UI = {
     'nav.aria': 'Main navigation',
     'nav.focusMode': 'Focus mode',
     'nav.activeProfile': 'Active profile: {name}',
+    'nav.openMenu': 'Open menu',
+    'nav.closeMenu': 'Close menu',
 
     'splash.start': 'Start',
     'splash.startAria': 'Start now',
