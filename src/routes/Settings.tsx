@@ -136,7 +136,7 @@ export default function Settings() {
       <section className="card-soft p-5 flex flex-col gap-3">
         <h2>{t('settings.appearance')}</h2>
         <label className="flex items-center justify-between gap-3 flex-wrap">
-          <span>🌗 {t('settings.darkMode')}</span>
+          <span>{t('settings.darkMode')}</span>
           <input
             type="checkbox"
             className="w-6 h-6"
@@ -145,7 +145,7 @@ export default function Settings() {
           />
         </label>
         <label className="flex items-center justify-between gap-3 flex-wrap">
-          <span>🧘 {t('settings.distractionFree')}</span>
+          <span>{t('settings.distractionFree')}</span>
           <input
             type="checkbox"
             className="w-6 h-6"
@@ -154,7 +154,7 @@ export default function Settings() {
           />
         </label>
         <label className="flex items-center justify-between gap-3 flex-wrap">
-          <span>🔔 {t('settings.softSounds')}</span>
+          <span>{t('settings.softSounds')}</span>
           <input
             type="checkbox"
             className="w-6 h-6"
@@ -227,7 +227,7 @@ export default function Settings() {
             )}
           </label>
           <div className="sm:col-span-2">
-            <button type="submit" className="btn btn-success">➕ {t('settings.add')}</button>
+            <button type="submit" className="btn btn-success">{t('settings.add')}</button>
           </div>
         </form>
 

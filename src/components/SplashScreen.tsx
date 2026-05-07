@@ -271,7 +271,7 @@ export function SplashScreen({ onFinish, withSound = true }: SplashScreenProps) 
         <p className="text-sm text-soft-textSoft mt-1">{t('splash.hint')}</p>
         {withSound && audioBlocked && (
           <p className="text-xs text-soft-textSoft/80 mt-1" aria-live="polite">
-            🔊 {t('splash.audioBlocked')}
+            {t('splash.audioBlocked')}
           </p>
         )}
       </div>
