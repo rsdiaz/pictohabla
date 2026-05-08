@@ -35,14 +35,29 @@ App web accesible para niños con autismo: pictogramas con voz, rutinas, emocion
 - **MediaRecorder API** (grabación de audio)
 - **localStorage** para todo el estado (favoritos, perfiles, ajustes, pictogramas personalizados, grabaciones)
 
+### 🛠 Calidad de código
+
+| Herramienta                 | Propósito                                          |
+| --------------------------- | -------------------------------------------------- |
+| **ESLint 10** (flat config) | Análisis estático TypeScript + React               |
+| **Prettier 3**              | Formato consistente                                |
+| **Husky 9**                 | Git hooks (`pre-commit`, `commit-msg`)             |
+| **lint-staged**             | Lint + formato solo sobre archivos modificados     |
+| **commitlint**              | Mensajes de commit en formato Conventional Commits |
+
 ## 🚀 Comandos
 
 ```bash
 npm install
-npm run dev        # http://localhost:5173
-npm run build      # tsc -b && vite build  ->  dist/
-npm run preview    # sirve dist/
-npm run typecheck
+npm run dev           # http://localhost:5173
+npm run build         # tsc -b && vite build  ->  dist/
+npm run preview       # sirve dist/
+npm run typecheck     # tsc --noEmit
+npm run lint          # ESLint
+npm run lint:fix      # ESLint con auto-fix
+npm run format        # Prettier --write
+npm run format:check  # Prettier --check (CI)
+npm run check         # lint + typecheck + build (gate completo)
 ```
 
 ## 📁 Estructura
@@ -61,12 +76,22 @@ src/
     Timer.tsx, RewardModal.tsx, FavoriteButton.tsx
   routes/
     Home.tsx, Category.tsx, Routine.tsx, Emotions.tsx, Calm.tsx,
-    Stories.tsx, Favorites.tsx, Settings.tsx, Profile.tsx
+    TimerPage.tsx, Stories.tsx, Favorites.tsx, Settings.tsx, Profile.tsx
   styles/global.css
 public/
   .nojekyll
   favicon.svg, icon-512.svg, icon-maskable.svg
-.github/workflows/deploy.yml    # GitHub Pages
+.github/
+  workflows/
+    deploy.yml       # GitHub Pages (push a main)
+    pr-checks.yml    # Gate de calidad en PRs (lint + typecheck + build)
+eslint.config.js
+.prettierrc.json
+.editorconfig
+commitlint.config.cjs
+.husky/
+  pre-commit         # lint-staged + typecheck
+  commit-msg         # commitlint
 ```
 
 ## 🌍 Internacionalización
@@ -91,7 +116,7 @@ La app es una **Progressive Web App** instalable:
 - `navigateFallback: 'index.html'` para que las rutas `#/...` funcionen offline.
 - Componente `PWAPrompt` con dos avisos:
   - 📴 **"Listo para usar sin conexión"** tras el primer registro (auto-cierre 4 s).
-  - 🔄 **"Nueva versión disponible"** con botones *Actualizar / Más tarde*.
+  - 🔄 **"Nueva versión disponible"** con botones _Actualizar / Más tarde_.
 
 ### Probar localmente
 
@@ -106,7 +131,12 @@ En Chrome/Edge aparecerá el botón **Instalar** en la barra de direcciones. En 
 
 ## 🚢 Despliegue en GitHub Pages
 
-El repositorio incluye un workflow ([.github/workflows/deploy.yml](.github/workflows/deploy.yml)) que se ejecuta en cada push a `main`:
+El repositorio incluye dos workflows:
+
+- **[deploy.yml](.github/workflows/deploy.yml)** — se ejecuta en cada push a `main`.
+- **[pr-checks.yml](.github/workflows/pr-checks.yml)** — gate de calidad en cada PR (`lint`, `typecheck`, `build`).
+
+### Pasos del deploy
 
 1. `npm ci` + `npm run build`
 2. Copia `dist/index.html` a `dist/404.html` (fallback de rutas)

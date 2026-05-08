@@ -1,37 +1,167 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+/* Modo oscuro con atributo data-theme="dark" */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ============================================================
+   Tema: tokens de diseño
+   ============================================================ */
+@theme {
+  /* Paleta soft / light */
+  --color-soft-bg: #f7fafc;
+  --color-soft-surface: #ffffff;
+  --color-soft-surface2: #eef4f8;
+  --color-soft-border: #d9e2ec;
+  --color-soft-text: #1f2937;
+  --color-soft-textSoft: #4b5563;
+
+  /* Brand */
+  --color-brand: #6fb1e0;
+  --color-brand-soft: #a7d8ff;
+
+  /* Pastel */
+  --color-pastel-blue: #a7d8ff;
+  --color-pastel-pink: #ffd8e4;
+  --color-pastel-green: #c7e9b0;
+  --color-pastel-yellow: #ffe5a0;
+  --color-pastel-purple: #d5c6f0;
+  --color-pastel-peach: #ffc9b5;
+  --color-pastel-mint: #b5e2e2;
+  --color-pastel-sand: #f0dcc4;
+  --color-pastel-danger: #ffb3b3;
+  --color-pastel-success: #b7e4c7;
+
+  /* Dark */
+  --color-dark-bg: #1f2733;
+  --color-dark-surface: #2a3340;
+  --color-dark-surface2: #323c4a;
+  --color-dark-border: #3e4a5a;
+  --color-dark-text: #f1f5f9;
+  --color-dark-textSoft: #cbd5e1;
+
+  /* Tipografía */
+  --font-sans: 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  /* Border radius (override defaults) */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+
+  /* Sombras */
+  --shadow-soft: 0 2px 6px rgba(0, 0, 0, 0.06);
+  --shadow-card: 0 6px 16px rgba(0, 0, 0, 0.08);
+
+  /* Animaciones */
+  --animate-float: float 5s ease-in-out infinite;
+  --animate-bounce-soft: bounce-soft 2.4s ease-in-out infinite;
+  --animate-fade-up: fade-up 0.7s ease-out both;
+  --animate-loading-dot: loading-dot 1.2s ease-in-out infinite;
+  --animate-bounce-once: bounce-once 0.5s ease-out both;
+}
+
+/* Keyframes */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-22px) rotate(8deg);
+  }
+}
+@keyframes bounce-soft {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-14px) scale(1.04);
+  }
+}
+@keyframes fade-up {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes loading-dot {
+  0%,
+  80%,
+  100% {
+    transform: scale(0.6);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes bounce-once {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
 
 /* ============================================================
    Capa base: fuente, tamaños accesibles, foco visible y temas.
    ============================================================ */
 @layer base {
-  html, body, #root { height: 100%; }
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
   body {
     @apply font-sans text-soft-text bg-soft-bg antialiased;
     -webkit-tap-highlight-color: transparent;
     font-size: 18px;
   }
-  [data-theme="dark"] body {
+  [data-theme='dark'] body {
     @apply bg-dark-bg text-dark-text;
   }
   /* Foco accesible y visible */
   :focus-visible {
-    outline: 3px solid theme('colors.brand.DEFAULT');
+    outline: 3px solid var(--color-brand);
     outline-offset: 3px;
     border-radius: 10px;
   }
-  h1 { @apply text-3xl sm:text-4xl font-bold leading-tight; }
-  h2 { @apply text-2xl sm:text-3xl font-bold leading-tight; }
-  h3 { @apply text-xl sm:text-2xl font-bold leading-tight; }
+  h1 {
+    @apply text-3xl sm:text-4xl font-bold leading-tight;
+  }
+  h2 {
+    @apply text-2xl sm:text-3xl font-bold leading-tight;
+  }
+  h3 {
+    @apply text-xl sm:text-2xl font-bold leading-tight;
+  }
 
   /* Modo sin distracciones: oculta navegación y agranda elementos */
-  [data-distraction-free="true"] .nav-hide-on-focus { display: none !important; }
-  [data-distraction-free="true"] body { font-size: 22px; }
+  [data-distraction-free='true'] .nav-hide-on-focus {
+    display: none !important;
+  }
+  [data-distraction-free='true'] body {
+    font-size: 22px;
+  }
 
   /* Reduce motion */
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
       animation-duration: 0ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0ms !important;
@@ -51,14 +181,20 @@
   .btn-secondary {
     @apply bg-soft-surface2 border-2 border-soft-border text-soft-text hover:bg-soft-surface2/80 hover:text-soft-text;
   }
-  .btn-success { @apply bg-pastel-success hover:bg-pastel-success/80 hover:text-soft-text; }
-  .btn-danger  { @apply bg-pastel-danger  hover:bg-pastel-danger/80  hover:text-soft-text; }
-  .btn:disabled { @apply opacity-50 cursor-not-allowed hover:bg-brand-soft hover:text-soft-text; }
+  .btn-success {
+    @apply bg-pastel-success hover:bg-pastel-success/80 hover:text-soft-text;
+  }
+  .btn-danger {
+    @apply bg-pastel-danger  hover:bg-pastel-danger/80  hover:text-soft-text;
+  }
+  .btn:disabled {
+    @apply opacity-50 cursor-not-allowed hover:bg-brand-soft hover:text-soft-text;
+  }
 
   .card-soft {
     @apply bg-soft-surface border border-soft-border rounded-lg shadow-soft;
   }
-  [data-theme="dark"] .card-soft {
+  [data-theme='dark'] .card-soft {
     @apply bg-dark-surface border-dark-border;
   }
 
@@ -66,7 +202,7 @@
     @apply px-3 py-2 rounded-md border-2 border-soft-border bg-soft-surface text-soft-text text-base
            focus:outline-none focus:border-brand;
   }
-  [data-theme="dark"] .input-base {
+  [data-theme='dark'] .input-base {
     @apply bg-dark-surface text-dark-text border-dark-border;
   }
 }
