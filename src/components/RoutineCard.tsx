@@ -16,7 +16,7 @@ export function RoutineCard({ routine }: RoutineCardProps) {
   const trTitle = tRoutine(routine);
   const [reward, setReward] = useState(false);
 
-  const progress = routineProgress[routine.id] || {};
+  const progress = useMemo(() => routineProgress[routine.id] || {}, [routineProgress, routine.id]);
   const completed = useMemo(() => routine.steps.filter((s) => progress[s.id]).length, [routine, progress]);
   const total = routine.steps.length;
   const pct = Math.round((completed / total) * 100);
